@@ -1,0 +1,46 @@
+#yangshh recoder
+
+
+To all,
+
+Found what I was missing (and causing all my build issues): rpm -Uvh http://files.freeswitch.org/freeswitch-release-1-6.noarch.rpm
+
+Now when I perform the yum install commands and it pulls down the right version and everything works as expected.
+
+Here is my procedure (for those who wish to use the manual configure/make approach):
+
+Install FreeSWITCH 1.6.0 on CentOS 7 (fresh installation):
+
+Note: Everything below is run inside CentOS 7 terminal as "root" user (via "su -" command)
+
+1) Make sure yum update is run and CentOS is up-to-date
+2) {optional} inside Terminal window select Edit Profile Preferences and select "Use custom default terminal size" and make it 160 x 60.  Close terminal and re-open for the change to take affect.
+3) yum -y install git
+4) yum -y install epel-release
+5) rpm -Uvh http://files.freeswitch.org/freeswitch-release-1-6.noarch.rpm
+6) yum -y install git gcc-c++ autoconf automake libtool wget python ncurses-devel zlib-devel libjpeg-devel openssl-devel e2fsprogs-devel sqlite-devel libcurl-devel pcre-devel speex-devel ldns-devel libedit-devel libxml2-devel
+7) yum -y install libyuv-devel opus-devel libvpx-devel libvpx2* libdb4* libidn-devel unbound-devel libuuid-devel lua-devel libsndfile-devel
+8) cd /usr/local/src
+9) git clone -b v1.6 https://freeswitch.org/stash/scm/fs/freeswitch.git
+10) cd /usr/local/src/freeswitch
+11) ./bootstrap.sh
+12)          ./configure
+13)          make
+14) make install
+15) make cd-sounds-install
+16) make cd-moh-install
+17) cd /usr/local/freeswitch/conf
+18) vi vars.xml
+                                Change:  <X-PRE-PROCESS cmd="set" data="default_password=1234"/> {!!set it to something different!!}
+                                Save and close (<Esc> :wq!)
+19) cd /usr/local/freeswitch/conf/sip_profiles
+20) mv internal-ipv6.xml internal-ipv6.xml.removed   {disables ipv6 support}
+21) mv external-ipv6.xml external-ipv6.xml.removed  {disables ipv6 support}
+22) cd /usr/local/freeswitch/bin
+23) ./freeswitch -nonat -nonatmap
+24) ... to exit from FreeSWITCH console
+
+
+
+
+
